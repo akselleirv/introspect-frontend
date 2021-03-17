@@ -8,6 +8,8 @@ import createStyles from "@material-ui/core/styles/createStyles";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
+import { PlayerPaper } from "../../components/PlayerPaper/PlayerPaper";
+import { Player } from "../../types/lobby";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,48 +17,24 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       overflow: "auto",
       height: "25ch",
-      width: "90%"
-    },
-    paper: {
-      maxWidth: 400,
-      margin: `${theme.spacing(1)}px auto`,
-      padding: theme.spacing(1),
-      display: "flex",
-      alignItems: "center",
-    },
-    avatar: {
-      color: theme.palette.getContrastText(deepOrange[500]),
-      backgroundColor: deepOrange[500],
-    },
-    name: {
-      paddingLeft: theme.spacing(1),
+      width: "90%",
     },
   })
 );
-export function ActivePlayers({ players }: { players: string[] }) {
+export function ActivePlayers({ players }: { players: Player[] }) {
   const classes = useStyles();
 
-  function PlayerItem({ player }: { player: string }) {
-    return (
-      <>
-        <Grid item xs={6}>
-          <Paper elevation={4} className={classes.paper}>
-            <Avatar className={classes.avatar}>
-              {player.charAt(0).toUpperCase()}
-            </Avatar>
-            <Typography className={classes.name}  noWrap variant="body1">
-              {player.toUpperCase()}
-            </Typography>
-          </Paper>
-        </Grid>
-      </>
-    );
-  }
   return (
     <div className={classes.root}>
       <Grid container spacing={1} direction="row">
         {players.map((player) => (
-          <PlayerItem key={player} player={player} />
+          <PlayerPaper
+            key={player.name}
+            name={player.name}
+            extraStyle={
+              player.isReady ? { backgroundColor: "greenyellow" } : undefined
+            }
+          />
         ))}
       </Grid>
     </div>

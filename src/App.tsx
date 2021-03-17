@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { WelcomePage } from "./WelcomePage/WelcomePage";
 import { createStyles, Grid, makeStyles, Theme } from "@material-ui/core";
 import { Lobby } from "./Lobby/Lobby";
+import { Game } from "./Game/Game";
+import { LobbyRoomUpdate } from "./types/lobby";
+import { consts } from "./consts/consts";
+import useWebSocket from "react-use-websocket";
+import { RoomEventsLobby } from "./types/roomEvent";
+import { usePlayers } from "./hooks/usePlayers/usePlayers";
+import { CompositionOfGameAndLobby } from "./CompositionOfGameAndLobby/CompositionOfGameAndLobby";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,7 +37,7 @@ function App() {
     >
       {gameInfo ? (
         <>
-          <Lobby gameInfo={gameInfo} />
+        <CompositionOfGameAndLobby gameInfo={gameInfo}/>
         </>
       ) : (
         <WelcomePage

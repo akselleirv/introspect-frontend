@@ -6,20 +6,25 @@ import { consts } from "../consts/consts";
 import { ActivePlayers } from "./ActivePlayers/ActivePlayers";
 import { Chat } from "./Chat/Chat";
 import { Button } from "@material-ui/core";
-import { createMuiTheme } from "@material-ui/core/styles";
-
-
+import { RoomEventsLobby } from "../types/roomEvent";
+import { LobbyRoomUpdate } from "../types/lobby";
 
 export type Message = { message: string; player: string };
 
-export function Lobby({ gameInfo }: { gameInfo: GameInfo }) {
+export function Lobby({
+  gameInfo,
+  players,
+}: {
+  gameInfo: GameInfo;
+  players: LobbyRoomUpdate;
+}) {
   const { lastMessage, readyState, sendJsonMessage } = useWebSocket(
     consts().websocketUrl(gameInfo),
     {
       share: true,
     }
   );
-  const [activePlayers, setActivePlayers] = useState<string[]>([]);
+
   const [messages, setMessages] = useState<Message[]>([]);
 
   const connectionStatus = {
@@ -33,14 +38,8 @@ export function Lobby({ gameInfo }: { gameInfo: GameInfo }) {
   useEffect(() => {
     if (lastMessage !== null) {
       const message = JSON.parse(lastMessage.data);
-      if (message.event === "active_players") {
-        setActivePlayers(message.players);
-      }
-      if (message.event === "lobby_chat") {
+      if (message.event === RoomEventsLobby.Chat) {
         setMessages((prevMessages) => prevMessages.concat(message));
-      }
-      if(message.event === "lobby_player_ready"){
-
       }
     }
   }, [lastMessage]);
@@ -49,25 +48,25 @@ export function Lobby({ gameInfo }: { gameInfo: GameInfo }) {
     (message: string) =>
       message &&
       sendJsonMessage({
-        event: "lobby_chat",
+        event: RoomEventsLobby.Chat,
         player: gameInfo.playerName,
         message: message,
       }),
     []
   );
 
-  function handlePlayerReady(){
+  function handlePlayerReady() {
     sendJsonMessage({
-        event:"lobby_player_ready",
-        player: gameInfo.playerName,
-    })
+      event: RoomEventsLobby.PlayerReady,
+      player: gameInfo.playerName,
+    });
   }
 
   return (
     <>
       <Typography variant="h3">Room: {gameInfo.roomName}</Typography>
       <span>The WebSocket is currently {connectionStatus}</span>
-      <ActivePlayers players={activePlayers} />
+      <ActivePlayers players={players.players} />
 
       <Button onClick={handlePlayerReady} color="primary" variant="outlined">
         Ready To Play
