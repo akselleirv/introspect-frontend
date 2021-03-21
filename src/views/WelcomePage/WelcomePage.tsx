@@ -5,7 +5,7 @@ import {
 } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import React, { ChangeEvent, useState } from "react";
-import { GameInfo } from "../App";
+import { GameInfo } from "../../App";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import HomeIcon from "@material-ui/icons/Home";
 
