@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { WelcomePage } from "./views/WelcomePage/WelcomePage";
 import { createStyles, Grid, makeStyles, Theme } from "@material-ui/core";
 import { CompositionOfGameAndLobby } from "./views/CompositionOfGameAndLobby/CompositionOfGameAndLobby";
+import { SelfVoting } from "./views/Game/SelfVoting/SelfVoting";
+import { Player } from "./types/lobby";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -13,6 +15,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+const mockPlayers: Player[] = [
+  {name: 'Player AA', isReady: true},
+  {name: 'Player BB', isReady: true},
+  {name: 'Player CC', isReady: true},
+  {name: 'Player DD', isReady: true},
+  {name: 'Player EE', isReady: true},
+]
 
 export type GameInfo = { playerName: string; roomName: string };
 function App() {
@@ -33,9 +43,10 @@ function App() {
         <CompositionOfGameAndLobby gameInfo={gameInfo}/>
         </>
       ) : (
-        <WelcomePage
-          setGameInfo={(gameInfo: GameInfo) => setGameInfo(gameInfo)}
-        />
+        // <WelcomePage
+        //   setGameInfo={(gameInfo: GameInfo) => setGameInfo(gameInfo)}
+        // />
+        <SelfVoting players={mockPlayers} gameInfo={{roomName: 'test', playerName: 'test'}} />
       )}
     </Grid>
   );

@@ -22,7 +22,7 @@ export function Game({
   return (
     <>
       {isSelfVoting ? (
-        <SelfVoting gameInfo={gameInfo}/>
+        <SelfVoting players={players} gameInfo={gameInfo}/>
       ) : (
         <QuestionVoting players={players} gameInfo={gameInfo} />
       )}

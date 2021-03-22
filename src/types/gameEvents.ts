@@ -1,4 +1,4 @@
-import { SelfVote } from "../views/Game/SelfVoting/SelfVoting";
+import { SelfVote } from "../views/Game/SelfVoting/DoSelfVoting/DoSelfVoting";
 
 export interface Vote {
     playerWhoReceivedTheVote: string
