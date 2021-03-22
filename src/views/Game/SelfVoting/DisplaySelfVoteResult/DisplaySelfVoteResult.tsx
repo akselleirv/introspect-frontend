@@ -3,28 +3,23 @@ import {
   Button,
   createStyles,
   Divider,
-  List,
   makeStyles,
   Theme,
   Typography,
 } from "@material-ui/core"
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { deepOrange } from "@material-ui/core/colors"
 import React from "react"
 import { Player } from "../../../../types/lobby"
 
-import {
-  useTransition,
-  animated,
-  useChain,
-} from "react-spring"
+import { useTransition, animated } from "react-spring"
 import { AnimatedCount } from "../../../../components/AnimatedCount/AnimatedCount"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
-      display: "flex",
-      flexDirection: "column",
+      position: "absolute",
+      top: '10%',
     },
     avatar: {
       color: theme.palette.getContrastText(deepOrange[500]),
@@ -53,11 +48,6 @@ export function DisplaySelfVoteResult({ players }: { players: Player[] }) {
   const classes = useStyles()
   const height = 60
 
-  const pointsCountingRef = useRef<any>()
-  const reorderListRef = useRef<any>()
-  //@ts-ignore
-  //useChain([pointsCountingRef, reorderListRef])
-
   const [mockedPlayers, setMockedPlayers] = useState([
     { name: "Player AA", isReady: true, points: 0 },
     { name: "Player BB", isReady: true, points: 0 },
@@ -74,7 +64,6 @@ export function DisplaySelfVoteResult({ players }: { players: Player[] }) {
       from: { position: "absolute" },
       enter: ({ y }) => ({ y }),
       update: ({ y }) => ({ y }),
-      //ref: reorderListRef,
     }
   )
 
@@ -92,9 +81,9 @@ export function DisplaySelfVoteResult({ players }: { players: Player[] }) {
 
   return (
     <>
+      <div className={classes.list}>
       <button onClick={updatePointsEvent}>trigger points update</button>
-      <h1>display self vote result</h1>
-      <List className={classes.list}>
+      <Typography variant="h2">Scoreboard</Typography>
         {/*@ts-ignore */}
         {transition.map(({ item, props: { y, ...rest }, key }) => (
           <animated.div
@@ -119,16 +108,14 @@ export function DisplaySelfVoteResult({ players }: { players: Player[] }) {
                   style={{ marginLeft: 10 }}
                 />
                 <Typography className={classes.name} noWrap variant="body1">
-                  <AnimatedCount
-                    animationRef={pointsCountingRef}
-                    points={item.points}
-                  />
+                  <AnimatedCount points={item.points} />
                 </Typography>
               </div>
             </Button>
           </animated.div>
         ))}
-      </List>
+      </div>
+    
     </>
   )
 }
