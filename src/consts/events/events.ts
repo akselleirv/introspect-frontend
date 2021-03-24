@@ -1,8 +1,8 @@
 export enum GameEvents {
-  PlayerVotedOnQuestion = "player_voted_on_question",
+  PlayerVotedOnQuestion = "register_question_vote",
   GetQuestionsRequest = "get_questions_request",
   GetQuestionsResponse = "get_questions_response",
-  NextQuestion = "next_question",
+  RoundIsDone = "round_is_done",
   IsSelfVote = "is_self_vote",
   RegisterSelfVote = 'register_self_vote',
 }

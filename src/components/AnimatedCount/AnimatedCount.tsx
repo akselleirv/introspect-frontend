@@ -5,11 +5,10 @@ export function AnimatedCount({
 }: {
   points: number
 }) {
-  //@ts-ignore
   const countingAnimation = useSpring({
     from: { number: points },
     to: { number: points },
-    config: { friction: 100 },
+    config: { friction: 50 },
   })
 
   return (

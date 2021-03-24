@@ -10,16 +10,15 @@ import {
 import { useState } from "react"
 import { deepOrange } from "@material-ui/core/colors"
 import React from "react"
-import { Player } from "../../../../types/lobby"
-
 import { useTransition, animated } from "react-spring"
-import { AnimatedCount } from "../../../../components/AnimatedCount/AnimatedCount"
+import { AnimatedCount } from "../AnimatedCount/AnimatedCount"
+import { Player } from "../../types/lobby"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
       position: "absolute",
-      top: '10%',
+      top: "10%",
     },
     avatar: {
       color: theme.palette.getContrastText(deepOrange[500]),
@@ -44,21 +43,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export function DisplaySelfVoteResult({ players }: { players: Player[] }) {
+export function Scoreboard({ players }: { players: Player[] }) {
   const classes = useStyles()
   const height = 60
 
-  const [mockedPlayers, setMockedPlayers] = useState([
-    { name: "Player AA", isReady: true, points: 0 },
-    { name: "Player BB", isReady: true, points: 0 },
-    { name: "Player CC", isReady: true, points: 0 },
-    { name: "Player DD", isReady: true, points: 0 },
-    { name: "Player EE", isReady: true, points: 0 },
-  ])
-
   //@ts-ignore
   const transition = useTransition(
-    mockedPlayers.map((player, i) => ({ ...player, y: i * height })),
+    players.map((player, i) => ({ ...player, y: i * height })),
     (player) => player.name,
     {
       from: { position: "absolute" },
@@ -67,23 +58,10 @@ export function DisplaySelfVoteResult({ players }: { players: Player[] }) {
     }
   )
 
-  function updatePointsEvent() {
-    setMockedPlayers((prev) =>
-      prev
-        .map((p) => ({
-          name: p.name,
-          isReady: p.isReady,
-          points: p.points === 0 ? Math.random() * 10 : 0,
-        }))
-        .sort((p1, p2) => p2.points - p1.points)
-    )
-  }
-
   return (
     <>
       <div className={classes.list}>
-      <button onClick={updatePointsEvent}>trigger points update</button>
-      <Typography variant="h2">Scoreboard</Typography>
+        <Typography variant="h2">Scoreboard</Typography>
         {/*@ts-ignore */}
         {transition.map(({ item, props: { y, ...rest }, key }) => (
           <animated.div
@@ -115,9 +93,6 @@ export function DisplaySelfVoteResult({ players }: { players: Player[] }) {
           </animated.div>
         ))}
       </div>
-    
     </>
   )
 }
-
-//transform: "translate3d(0,-40px,0)"

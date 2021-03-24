@@ -27,13 +27,11 @@ export function PlayerButton({
   extraStyle,
   actionHandler,
   disabled,
-  points
 }: {
   name: string;
   extraStyle?: React.CSSProperties | undefined;
   actionHandler?: (info: string) => void;
   disabled?: boolean
-  points?: string
 }) {
   const classes = useStyles();
 
@@ -54,10 +52,6 @@ export function PlayerButton({
         </Avatar>
         <Typography className={classes.name} noWrap variant="body1">
           {name.toUpperCase()}
-        </Typography>
-        <Divider orientation="vertical" flexItem style={{marginLeft: 10}}/>
-        <Typography className={classes.name} noWrap variant="body1">
-          5
         </Typography>
       </Button>
     </Grid>

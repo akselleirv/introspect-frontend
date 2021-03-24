@@ -12,8 +12,7 @@ import { GameEvents, PlayerInfo } from "../../../consts/events/events"
 import { useEventListener } from "../../../hooks/useEventListener/useEventListener"
 import { useEventListenerCallback } from "../../../hooks/useEventListenerCallback/useEventListenerCallback"
 import { useEventSender } from "../../../hooks/useEventSender/useEventSender"
-import { useQuestion } from "../../../hooks/useQuestions/useQuestions"
-import { PlayerVotedOnQuestion, Vote } from "../../../types/gameEvents"
+import { PlayerVotedOnQuestion, Question, Vote } from "../../../types/gameEvents"
 import { Player } from "../../../types/lobby"
 
 const MAX_VOTES_PER_ROUND = 2
@@ -34,23 +33,19 @@ const useStyles = makeStyles((theme: Theme) =>
 export function QuestionVoting({
   players,
   gameInfo,
+  question,
+  disableVoting,
+  setDisableVoting
 }: {
   players: Player[]
   gameInfo: GameInfo
+  question: Question
+  disableVoting: boolean
+  setDisableVoting: (disable: boolean) => void
 }) {
   const classes = useStyles()
-  const { question, nextQuestion } = useQuestion(gameInfo)
   const { sendEvent } = useEventSender(gameInfo)
   const [votes, setVotes] = useState<Vote[]>([])
-  useEventListenerCallback(
-    () => {
-      setDisableVoting(false)
-      nextQuestion()
-    },
-    GameEvents.NextQuestion,
-    gameInfo
-  )
-  const [disableVoting, setDisableVoting] = useState<boolean>(false)
 
   function handlePlayerVote(playerReceiver: string): void {
     if (question !== undefined) {
