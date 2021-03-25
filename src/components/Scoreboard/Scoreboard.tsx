@@ -13,6 +13,7 @@ import React from "react"
 import { useTransition, animated } from "react-spring"
 import { AnimatedCount } from "../AnimatedCount/AnimatedCount"
 import { Player } from "../../types/lobby"
+import { QuestionPoint } from "../../types/gameEvents"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,14 +44,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export function Scoreboard({ players }: { players: Player[] }) {
+export function Scoreboard({ players }: { players: QuestionPoint[] }) {
   const classes = useStyles()
   const height = 60
+
+  console.log(players)
 
   //@ts-ignore
   const transition = useTransition(
     players.map((player, i) => ({ ...player, y: i * height })),
-    (player) => player.name,
+    (player) => player.player,
     {
       from: { position: "absolute" },
       enter: ({ y }) => ({ y }),
@@ -75,10 +78,10 @@ export function Scoreboard({ players }: { players: Player[] }) {
             <Button variant="contained" className={classes.button}>
               <div className={classes.buttonContent}>
                 <Avatar className={classes.avatar}>
-                  {item.name.charAt(0).toUpperCase()}
+                  {item.player.charAt(0).toUpperCase()}
                 </Avatar>
                 <Typography className={classes.name} noWrap variant="body1">
-                  {item.name.toUpperCase()}
+                  {item.player.toUpperCase()}
                 </Typography>
                 <Divider
                   orientation="vertical"

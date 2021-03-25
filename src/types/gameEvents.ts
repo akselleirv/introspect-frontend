@@ -20,3 +20,8 @@ export interface RegisterSelfVote {
     choice: SelfVote
     question: Question
 }
+
+export interface QuestionPoint {
+    player: string
+    points: number
+}

@@ -7,6 +7,8 @@ import { GameEvents } from "../../consts/events/events"
 import { SelfVoting } from "./SelfVoting/SelfVoting"
 import { useQuestion } from "../../hooks/useQuestions/useQuestions"
 import { Typography } from "@material-ui/core"
+import { QuestionPoint } from "../../types/gameEvents"
+import { Scoreboard } from "../../components/Scoreboard/Scoreboard"
 
 enum ScreenMode {
   QuestionVoting = "question_voting",
@@ -27,6 +29,7 @@ export function Game({
   )
   const [disableVoting, setDisableVoting] = useState<boolean>(false)
   const { question, nextQuestion } = useQuestion(gameInfo)
+  const [questionPoints, setQuestionPoints] = useState<QuestionPoint[]>([])
 
   useEffect(() => {
     setScreenMode(
@@ -55,13 +58,14 @@ export function Game({
     gameInfo
   )
 
-  // useEventListenerCallback(
-  //   () => {
-  //     setScreenMode(ScreenMode.Scoreboard)
-  //   },
-  //   GameEvents.RoundIsDone,
-  //   gameInfo
-  // )
+  useEventListenerCallback<{ questionPoints: QuestionPoint[] }>(
+    (eventMessage) => {
+      eventMessage !== undefined && setQuestionPoints(eventMessage.questionPoints)
+      setScreenMode(ScreenMode.Scoreboard)
+    },
+    GameEvents.RoundIsDone,
+    gameInfo
+  )
   return (
     <>
       {screenMode === ScreenMode.FetchingQuestion && (
@@ -85,6 +89,10 @@ export function Game({
           disableVoting={disableVoting}
           setDisableVoting={(disable: boolean) => setDisableVoting(disable)}
         />
+      )}
+
+      {screenMode === ScreenMode.Scoreboard && (
+        <Scoreboard players={questionPoints} />
       )}
     </>
   )
