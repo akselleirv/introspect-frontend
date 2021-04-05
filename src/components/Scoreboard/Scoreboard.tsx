@@ -13,7 +13,7 @@ import React from "react"
 import { useTransition, animated } from "react-spring"
 import { AnimatedCount } from "../AnimatedCount/AnimatedCount"
 import { Player } from "../../types/lobby"
-import { QuestionPoint } from "../../types/gameEvents"
+import { PlayerResult } from "../../types/gameEvents"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export function Scoreboard({ players }: { players: QuestionPoint[] }) {
+export function Scoreboard({ players }: { players: PlayerResult[] }) {
   const classes = useStyles()
   const height = 60
 

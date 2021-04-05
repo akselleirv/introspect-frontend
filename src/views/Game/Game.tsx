@@ -7,13 +7,15 @@ import { GameEvents } from "../../consts/events/events"
 import { SelfVoting } from "./SelfVoting/SelfVoting"
 import { useQuestion } from "../../hooks/useQuestions/useQuestions"
 import { Typography } from "@material-ui/core"
-import { QuestionPoint } from "../../types/gameEvents"
+import { PlayerResult, ResultPoints, SelfVote } from "../../types/gameEvents"
 import { Scoreboard } from "../../components/Scoreboard/Scoreboard"
+import { QuestionResults } from "../../components/QuestionResults/QuestionResults"
 
 enum ScreenMode {
   QuestionVoting = "question_voting",
   SelfVoting = "self_voting",
   Scoreboard = "scoreboard",
+  StatusAfterSelfVote = "question_result",
   FetchingQuestion = "fetching_question",
 }
 
@@ -29,7 +31,7 @@ export function Game({
   )
   const [disableVoting, setDisableVoting] = useState<boolean>(false)
   const { question, nextQuestion } = useQuestion(gameInfo)
-  const [questionPoints, setQuestionPoints] = useState<QuestionPoint[]>([])
+  const [playersResults, setPlayersResults] = useState<PlayerResult[]>([])
 
   useEffect(() => {
     setScreenMode(
@@ -48,22 +50,30 @@ export function Game({
     gameInfo
   )
 
-  useEventListenerCallback(
-    () => {
+  useEventListenerCallback<{ questionPoints: PlayerResult[] }>(
+    (eventMessage) => {
       setDisableVoting(false)
-      setScreenMode(ScreenMode.QuestionVoting)
-      nextQuestion()
+      setScreenMode(ScreenMode.StatusAfterSelfVote)
+      eventMessage != undefined &&
+        setPlayersResults(eventMessage.questionPoints)
+
+      const timer = setTimeout(() => {
+        setScreenMode(ScreenMode.QuestionVoting)
+        nextQuestion()
+        clearTimeout(timer)
+      }, 5000)
     },
-    GameEvents.RoundIsDone,
+    GameEvents.QuestionIsDone,
     gameInfo
   )
 
-  useEventListenerCallback<{ questionPoints: QuestionPoint[] }>(
+  useEventListenerCallback<{ questionPoints: PlayerResult[] }>(
     (eventMessage) => {
-      eventMessage !== undefined && setQuestionPoints(eventMessage.questionPoints)
+      eventMessage !== undefined &&
+        setPlayersResults(eventMessage.questionPoints)
       setScreenMode(ScreenMode.Scoreboard)
     },
-    GameEvents.RoundIsDone,
+    GameEvents.GameIsFinished,
     gameInfo
   )
   return (
@@ -91,8 +101,12 @@ export function Game({
         />
       )}
 
+      {screenMode === ScreenMode.StatusAfterSelfVote && (
+        <QuestionResults playerResults={playersResults} />
+      )}
+
       {screenMode === ScreenMode.Scoreboard && (
-        <Scoreboard players={questionPoints} />
+        <Scoreboard players={playersResults} />
       )}
     </>
   )

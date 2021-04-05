@@ -4,16 +4,12 @@ import React, { useState } from "react"
 import { GameInfo } from "../../../App"
 import { GameEvents } from "../../../consts/events/events"
 import { useEventSender } from "../../../hooks/useEventSender/useEventSender"
-import { RegisterSelfVote, Question } from "../../../types/gameEvents"
+import { RegisterSelfVote, Question, SelfVote} from "../../../types/gameEvents"
 import MostVotedIcon from "@material-ui/icons/ExpandLess"
 import LeastVotedIcon from "@material-ui/icons/ExpandMore"
 import NeutralVotedIcon from "@material-ui/icons/Remove"
 
-export enum SelfVote {
-  MostVoted = "Most Voted",
-  Neutral = "Neutral",
-  LeastVoted = " Least Voted",
-}
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
