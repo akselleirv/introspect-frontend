@@ -7,7 +7,12 @@ import { GameEvents } from "../../consts/events/events"
 import { SelfVoting } from "./SelfVoting/SelfVoting"
 import { useQuestion } from "../../hooks/useQuestions/useQuestions"
 import { Typography } from "@material-ui/core"
-import { PlayerResult, ResultPoints, SelfVote } from "../../types/gameEvents"
+import {
+  PlayerResultExtended,
+  PlayerResult,
+  ResultPoints,
+  SelfVote,
+} from "../../types/gameEvents"
 import { Scoreboard } from "../../components/Scoreboard/Scoreboard"
 import { QuestionResults } from "../../components/QuestionResults/QuestionResults"
 
@@ -18,6 +23,8 @@ enum ScreenMode {
   StatusAfterSelfVote = "question_result",
   FetchingQuestion = "fetching_question",
 }
+
+const MAX_QUESTIONS_PER_ROUND = 4
 
 export function Game({
   players,
@@ -31,7 +38,16 @@ export function Game({
   )
   const [disableVoting, setDisableVoting] = useState<boolean>(false)
   const { question, nextQuestion } = useQuestion(gameInfo)
-  const [playersResults, setPlayersResults] = useState<PlayerResult[]>([])
+  const [questionResult, setQuestionResult] = useState<PlayerResultExtended[]>(
+    []
+  )
+
+  const [playersResultsTotal, setPlayersResultsTotal] = useState<
+    PlayerResult[]
+  >([])
+  const [playersResultLastRound, setPlayersResultLastRound] = useState<
+    PlayerResult[]
+  >([])
 
   useEffect(() => {
     setScreenMode(
@@ -50,27 +66,39 @@ export function Game({
     gameInfo
   )
 
-  useEventListenerCallback<{ questionPoints: PlayerResult[] }>(
+  useEventListenerCallback<{
+    questionPoints: PlayerResultExtended[]
+    currentQuestion: number
+  }>(
     (eventMessage) => {
       setDisableVoting(false)
       setScreenMode(ScreenMode.StatusAfterSelfVote)
-      eventMessage != undefined &&
-        setPlayersResults(eventMessage.questionPoints)
+      if (eventMessage != undefined) {
+        setQuestionResult(eventMessage.questionPoints)
 
-      const timer = setTimeout(() => {
-        setScreenMode(ScreenMode.QuestionVoting)
-        nextQuestion()
-        clearTimeout(timer)
-      }, 5000)
+        if (eventMessage.currentQuestion % MAX_QUESTIONS_PER_ROUND !== 0) {
+          const timer = setTimeout(() => {
+            setScreenMode(ScreenMode.QuestionVoting)
+            nextQuestion()
+            clearTimeout(timer)
+          }, 3000)
+        }
+      }
     },
     GameEvents.QuestionIsDone,
     gameInfo
   )
 
-  useEventListenerCallback<{ questionPoints: PlayerResult[] }>(
+  useEventListenerCallback<{
+    playersResultLastRound: PlayerResult[]
+    playersResultsTotal: PlayerResult[]
+  }>(
     (eventMessage) => {
-      eventMessage !== undefined &&
-        setPlayersResults(eventMessage.questionPoints)
+      if (eventMessage !== undefined) {
+        setPlayersResultsTotal(eventMessage.playersResultsTotal)
+        setPlayersResultLastRound(eventMessage.playersResultLastRound)
+      }
+
       setScreenMode(ScreenMode.Scoreboard)
     },
     GameEvents.GameIsFinished,
@@ -102,11 +130,14 @@ export function Game({
       )}
 
       {screenMode === ScreenMode.StatusAfterSelfVote && (
-        <QuestionResults playerResults={playersResults} />
+        <QuestionResults playerResults={questionResult} />
       )}
 
       {screenMode === ScreenMode.Scoreboard && (
-        <Scoreboard players={playersResults} />
+        <Scoreboard
+          allRoundsResult={playersResultsTotal}
+          lastRoundResult={playersResultLastRound}
+        />
       )}
     </>
   )

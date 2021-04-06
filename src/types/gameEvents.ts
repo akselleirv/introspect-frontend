@@ -11,9 +11,12 @@ export enum ResultPoints {
 
 export interface PlayerResult {
     player: string
+    points: number
+}
+
+export interface PlayerResultExtended extends PlayerResult{
     selfVote: SelfVote
     votesReceived: number
-    points: ResultPoints
   }
 
 export interface Vote {

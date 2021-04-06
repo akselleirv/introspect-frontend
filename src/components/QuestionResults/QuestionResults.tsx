@@ -8,7 +8,7 @@ import { Theme } from "@material-ui/core/styles"
 import Typography from "@material-ui/core/Typography"
 import React from "react"
 import HowToVoteIcon from "@material-ui/icons/HowToVote"
-import { SelfVote, ResultPoints, PlayerResult } from "../../types/gameEvents"
+import { SelfVote, ResultPoints, PlayerResultExtended } from "../../types/gameEvents"
 
 import MostVotedIcon from "@material-ui/icons/ExpandLess"
 import LeastVotedIcon from "@material-ui/icons/ExpandMore"
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export function QuestionResults({
   playerResults,
 }: {
-  playerResults: PlayerResult[]
+  playerResults: PlayerResultExtended[]
 }) {
   return (
     <>
@@ -71,7 +71,7 @@ function StatusEntry({
   selfVote,
   votesReceived,
   points,
-}: PlayerResult) {
+}: PlayerResultExtended) {
   const classes = useStyles()
 
   function backgroundColorByResultPoint(result: ResultPoints): string {

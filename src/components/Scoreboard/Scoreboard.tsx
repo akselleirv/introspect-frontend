@@ -44,11 +44,27 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export function Scoreboard({ players }: { players: PlayerResult[] }) {
+export function Scoreboard({
+  lastRoundResult,
+  allRoundsResult,
+}: {
+  lastRoundResult: PlayerResult[]
+  allRoundsResult: PlayerResult[]
+}) {
   const classes = useStyles()
   const height = 60
 
-  console.log(players)
+  //TODO: implement the animation
+  const [players, setPlayers] = useState<PlayerResult[]>(allRoundsResult.map(pAll => {
+    const p = lastRoundResult.find(pLast => pAll.player === pLast)
+    return {player: p?.player, points: pAll.points - p?.points.}
+  }))
+  //   {
+  //   return lastRoundResult.map(curr => total.player === curr.player ? total.points - curr.points)
+  //   }
+  // )).sort((p1, p2) => p2.points - p1.points))
+
+
 
   //@ts-ignore
   const transition = useTransition(
