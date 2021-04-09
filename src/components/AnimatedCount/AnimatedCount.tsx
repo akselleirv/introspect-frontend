@@ -8,7 +8,7 @@ export function AnimatedCount({
   const countingAnimation = useSpring({
     from: { number: points },
     to: { number: points },
-    config: { friction: 50 },
+    config: { clamp: true, mass: 10  },
   })
 
   return (

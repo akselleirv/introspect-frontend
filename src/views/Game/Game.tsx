@@ -6,13 +6,8 @@ import { useEventListenerCallback } from "../../hooks/useEventListenerCallback/u
 import { GameEvents } from "../../consts/events/events"
 import { SelfVoting } from "./SelfVoting/SelfVoting"
 import { useQuestion } from "../../hooks/useQuestions/useQuestions"
-import { Typography } from "@material-ui/core"
-import {
-  PlayerResultExtended,
-  PlayerResult,
-  ResultPoints,
-  SelfVote,
-} from "../../types/gameEvents"
+import { Typography, Button } from "@material-ui/core"
+import { PlayerResultExtended, PlayerResult } from "../../types/gameEvents"
 import { Scoreboard } from "../../components/Scoreboard/Scoreboard"
 import { QuestionResults } from "../../components/QuestionResults/QuestionResults"
 
@@ -42,12 +37,11 @@ export function Game({
     []
   )
 
-  const [playersResultsTotal, setPlayersResultsTotal] = useState<
-    PlayerResult[]
-  >([])
-  const [playersResultLastRound, setPlayersResultLastRound] = useState<
-    PlayerResult[]
-  >([])
+  const [playersResults, setPlayersResults] = useState<PlayerResult[]>([])
+  const [
+    playersResultExceptLastRound,
+    setPlayersResultExceptLastRound,
+  ] = useState<PlayerResult[]>([])
 
   useEffect(() => {
     setScreenMode(
@@ -90,13 +84,19 @@ export function Game({
   )
 
   useEventListenerCallback<{
-    playersResultLastRound: PlayerResult[]
-    playersResultsTotal: PlayerResult[]
+    playersResultExceptLastRound: PlayerResult[]
+    playersResults: PlayerResult[]
   }>(
     (eventMessage) => {
       if (eventMessage !== undefined) {
-        setPlayersResultsTotal(eventMessage.playersResultsTotal)
-        setPlayersResultLastRound(eventMessage.playersResultLastRound)
+        setPlayersResultExceptLastRound(
+          eventMessage.playersResultExceptLastRound === null
+            ? players
+                .map((p) => ({ player: p.name, points: 0 }))
+                .concat([{ player: gameInfo.playerName, points: 0 }])
+            : eventMessage.playersResultExceptLastRound
+        )
+        setPlayersResults(eventMessage.playersResults)
       }
 
       setScreenMode(ScreenMode.Scoreboard)
@@ -134,10 +134,18 @@ export function Game({
       )}
 
       {screenMode === ScreenMode.Scoreboard && (
-        <Scoreboard
-          allRoundsResult={playersResultsTotal}
-          lastRoundResult={playersResultLastRound}
-        />
+        <>
+          <Scoreboard
+            allRoundsResult={playersResults}
+            allRoundsResultExpectLastRound={playersResultExceptLastRound}
+          />
+          <Button 
+            variant="contained"
+            color="primary"
+            onClick={() => setScreenMode(ScreenMode.QuestionVoting)}>
+            Next Round
+          </Button>
+        </>
       )}
     </>
   )

@@ -8,7 +8,11 @@ import { Theme } from "@material-ui/core/styles"
 import Typography from "@material-ui/core/Typography"
 import React from "react"
 import HowToVoteIcon from "@material-ui/icons/HowToVote"
-import { SelfVote, ResultPoints, PlayerResultExtended } from "../../types/gameEvents"
+import {
+  SelfVote,
+  ResultPoints,
+  PlayerResultExtended,
+} from "../../types/gameEvents"
 
 import MostVotedIcon from "@material-ui/icons/ExpandLess"
 import LeastVotedIcon from "@material-ui/icons/ExpandMore"
@@ -102,9 +106,16 @@ function StatusEntry({
           <SelfVoteIcon selfVote={selfVote} />
         </Typography>
         <DividerStyled />
-        <Typography>
-          {votesReceived} <HowToVoteIcon />
-        </Typography>
+        <div
+          style={{
+            display: "flex",
+            width: "5rem",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography>{votesReceived}</Typography>
+          <HowToVoteIcon />
+        </div>
       </Paper>
     </Grid>
   )

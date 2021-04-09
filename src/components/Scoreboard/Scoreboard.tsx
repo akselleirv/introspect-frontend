@@ -7,7 +7,7 @@ import {
   Theme,
   Typography,
 } from "@material-ui/core"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { deepOrange } from "@material-ui/core/colors"
 import React from "react"
 import { useTransition, animated } from "react-spring"
@@ -45,26 +45,27 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export function Scoreboard({
-  lastRoundResult,
+  allRoundsResultExpectLastRound,
   allRoundsResult,
 }: {
-  lastRoundResult: PlayerResult[]
+  allRoundsResultExpectLastRound: PlayerResult[]
   allRoundsResult: PlayerResult[]
 }) {
   const classes = useStyles()
   const height = 60
 
-  //TODO: implement the animation
-  const [players, setPlayers] = useState<PlayerResult[]>(allRoundsResult.map(pAll => {
-    const p = lastRoundResult.find(pLast => pAll.player === pLast)
-    return {player: p?.player, points: pAll.points - p?.points.}
-  }))
-  //   {
-  //   return lastRoundResult.map(curr => total.player === curr.player ? total.points - curr.points)
-  //   }
-  // )).sort((p1, p2) => p2.points - p1.points))
+  const [players, setPlayers] = useState<PlayerResult[]>(
+    sortPlayersByPointsAsc(allRoundsResultExpectLastRound)
+  )
 
+  function sortPlayersByPointsAsc(players: PlayerResult[]): PlayerResult[] {
+    return players.sort((p1, p2) => p2.points - p1.points)
+  }
 
+  const timer = setTimeout(() => {
+    setPlayers(sortPlayersByPointsAsc(allRoundsResult))
+    clearTimeout(timer)
+  }, 1500)
 
   //@ts-ignore
   const transition = useTransition(
