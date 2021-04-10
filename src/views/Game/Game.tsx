@@ -8,7 +8,11 @@ import { SelfVoting } from "./SelfVoting/SelfVoting"
 import { useQuestion } from "../../hooks/useQuestions/useQuestions"
 import { Typography, Button } from "@material-ui/core"
 import { PlayerResultExtended, PlayerResult } from "../../types/gameEvents"
-import { Scoreboard } from "../../components/Scoreboard/Scoreboard"
+import {
+  Scoreboard,
+  ScoreboardProps,
+  SCOREBOARD_HEIGHT_BETWEEN_EACH_PLAYER,
+} from "../../components/Scoreboard/Scoreboard"
 import { QuestionResults } from "../../components/QuestionResults/QuestionResults"
 
 enum ScreenMode {
@@ -19,7 +23,12 @@ enum ScreenMode {
   FetchingQuestion = "fetching_question",
 }
 
-const MAX_QUESTIONS_PER_ROUND = 4
+type QuestionIsDoneProps = {
+  questionPoints: PlayerResultExtended[]
+  currentQuestion: number
+}
+
+export const MAX_QUESTIONS_PER_ROUND = 4
 
 export function Game({
   players,
@@ -36,7 +45,6 @@ export function Game({
   const [questionResult, setQuestionResult] = useState<PlayerResultExtended[]>(
     []
   )
-
   const [playersResults, setPlayersResults] = useState<PlayerResult[]>([])
   const [
     playersResultExceptLastRound,
@@ -51,59 +59,54 @@ export function Game({
     )
   }, [question])
 
-  useEventListenerCallback(
-    () => {
-      setDisableVoting(false)
-      setScreenMode(ScreenMode.SelfVoting)
-    },
-    GameEvents.IsSelfVote,
-    gameInfo
-  )
-
-  useEventListenerCallback<{
-    questionPoints: PlayerResultExtended[]
-    currentQuestion: number
-  }>(
-    (eventMessage) => {
-      setDisableVoting(false)
-      setScreenMode(ScreenMode.StatusAfterSelfVote)
-      if (eventMessage != undefined) {
-        setQuestionResult(eventMessage.questionPoints)
-
-        if (eventMessage.currentQuestion % MAX_QUESTIONS_PER_ROUND !== 0) {
-          const timer = setTimeout(() => {
-            setScreenMode(ScreenMode.QuestionVoting)
-            nextQuestion()
-            clearTimeout(timer)
-          }, 3000)
-        }
-      }
-    },
+  useEventListenerCallback<QuestionIsDoneProps>(
     GameEvents.QuestionIsDone,
+    handleQuestionIsDoneEvent,
     gameInfo
   )
 
-  useEventListenerCallback<{
-    playersResultExceptLastRound: PlayerResult[]
-    playersResults: PlayerResult[]
-  }>(
-    (eventMessage) => {
-      if (eventMessage !== undefined) {
-        setPlayersResultExceptLastRound(
-          eventMessage.playersResultExceptLastRound === null
-            ? players
-                .map((p) => ({ player: p.name, points: 0 }))
-                .concat([{ player: gameInfo.playerName, points: 0 }])
-            : eventMessage.playersResultExceptLastRound
-        )
-        setPlayersResults(eventMessage.playersResults)
-      }
+  useEventListenerCallback(GameEvents.IsSelfVote, handleSelfVoteEvent, gameInfo)
 
-      setScreenMode(ScreenMode.Scoreboard)
-    },
+  useEventListenerCallback<ScoreboardProps>(
     GameEvents.GameIsFinished,
+    handleScoreboardEvent,
     gameInfo
   )
+
+  function handleQuestionIsDoneEvent(eventMessage: QuestionIsDoneProps) {
+    setDisableVoting(false)
+    setScreenMode(ScreenMode.StatusAfterSelfVote)
+    setQuestionResult(eventMessage.questionPoints)
+
+    // if not the last round, then display results for given ms
+    // finally change screen to question voting
+    if (eventMessage.currentQuestion % MAX_QUESTIONS_PER_ROUND !== 0) {
+      const timer = setTimeout(() => {
+        setScreenMode(ScreenMode.QuestionVoting)
+        nextQuestion()
+        clearTimeout(timer)
+      }, 3000)
+    }
+  }
+
+  function handleSelfVoteEvent() {
+    setDisableVoting(false)
+    setScreenMode(ScreenMode.SelfVoting)
+  }
+
+  function handleScoreboardEvent(eventMessage: ScoreboardProps) {
+    setPlayersResultExceptLastRound(
+      eventMessage.playersResultExceptLastRound === null
+        ? players
+            .map((p) => ({ player: p.name, points: 0 }))
+            .concat([{ player: gameInfo.playerName, points: 0 }])
+        : eventMessage.playersResultExceptLastRound
+    )
+    setPlayersResults(eventMessage.playersResults)
+
+    setScreenMode(ScreenMode.Scoreboard)
+  }
+
   return (
     <>
       {screenMode === ScreenMode.FetchingQuestion && (
@@ -136,13 +139,18 @@ export function Game({
       {screenMode === ScreenMode.Scoreboard && (
         <>
           <Scoreboard
-            allRoundsResult={playersResults}
-            allRoundsResultExpectLastRound={playersResultExceptLastRound}
+            playersResults={playersResults}
+            playersResultExceptLastRound={playersResultExceptLastRound}
           />
-          <Button 
+          <Button
             variant="contained"
             color="primary"
-            onClick={() => setScreenMode(ScreenMode.QuestionVoting)}>
+            style={{top: `${50 + SCOREBOARD_HEIGHT_BETWEEN_EACH_PLAYER*playersResults.length}px`}}
+            onClick={() => {
+              nextQuestion()
+              setScreenMode(ScreenMode.QuestionVoting)
+            }}
+          >
             Next Round
           </Button>
         </>

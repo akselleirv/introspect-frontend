@@ -6,20 +6,19 @@ import {
   makeStyles,
   Theme,
   Typography,
+  Grid,
 } from "@material-ui/core"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { deepOrange } from "@material-ui/core/colors"
 import React from "react"
 import { useTransition, animated } from "react-spring"
 import { AnimatedCount } from "../AnimatedCount/AnimatedCount"
-import { Player } from "../../types/lobby"
 import { PlayerResult } from "../../types/gameEvents"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
-      position: "absolute",
-      top: "10%",
+      marginTop: '-10rem'
     },
     avatar: {
       color: theme.palette.getContrastText(deepOrange[500]),
@@ -44,18 +43,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+export interface ScoreboardProps {
+  playersResultExceptLastRound: PlayerResult[]
+  playersResults: PlayerResult[]
+}
+
+export const SCOREBOARD_HEIGHT_BETWEEN_EACH_PLAYER = 60;
+
 export function Scoreboard({
-  allRoundsResultExpectLastRound,
-  allRoundsResult,
-}: {
-  allRoundsResultExpectLastRound: PlayerResult[]
-  allRoundsResult: PlayerResult[]
-}) {
+  playersResultExceptLastRound,
+  playersResults,
+}: ScoreboardProps) {
   const classes = useStyles()
-  const height = 60
+  const height = SCOREBOARD_HEIGHT_BETWEEN_EACH_PLAYER
 
   const [players, setPlayers] = useState<PlayerResult[]>(
-    sortPlayersByPointsAsc(allRoundsResultExpectLastRound)
+    sortPlayersByPointsAsc(playersResultExceptLastRound)
   )
 
   function sortPlayersByPointsAsc(players: PlayerResult[]): PlayerResult[] {
@@ -63,7 +66,7 @@ export function Scoreboard({
   }
 
   const timer = setTimeout(() => {
-    setPlayers(sortPlayersByPointsAsc(allRoundsResult))
+    setPlayers(sortPlayersByPointsAsc(playersResults))
     clearTimeout(timer)
   }, 1500)
 
@@ -80,7 +83,7 @@ export function Scoreboard({
 
   return (
     <>
-      <div className={classes.list}>
+      <Grid item className={classes.list}>
         <Typography variant="h2">Scoreboard</Typography>
         {/*@ts-ignore */}
         {transition.map(({ item, props: { y, ...rest }, key }) => (
@@ -112,7 +115,7 @@ export function Scoreboard({
             </Button>
           </animated.div>
         ))}
-      </div>
+      </Grid>
     </>
   )
 }

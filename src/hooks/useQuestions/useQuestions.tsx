@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { GameInfo } from "../../App"
 import { GameEvents, PlayerInfo } from "../../consts/events/events"
 import { Question } from "../../types/gameEvents"
+import { MAX_QUESTIONS_PER_ROUND } from "../../views/Game/Game"
 import { useEventListener } from "../useEventListener/useEventListener"
 import { useEventSender } from "../useEventSender/useEventSender"
 
@@ -17,14 +18,21 @@ export function useQuestion(gameInfo: GameInfo) {
     questionsEvent !== undefined && setQuestions(questionsEvent.questions)
   }, [questionsEvent])
 
-  useEffect(() => {
+  useEffect(getQuestions, [])
+
+  function getQuestions() {
     sendEvent<PlayerInfo>(GameEvents.GetQuestionsRequest, {
       player: gameInfo.playerName,
     })
-  }, [])
+  }
 
   function nextQuestion(): void {
-    setCurrentQuestion((prevQuestion) => ++prevQuestion)
+    if (currentQuestion + 1 === MAX_QUESTIONS_PER_ROUND) {
+      getQuestions()
+      setCurrentQuestion(0)
+    } else {
+      setCurrentQuestion((prevQuestion) => ++prevQuestion)
+    }
   }
 
   return {

@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Theme, Typography } from "@material-ui/core"
 import { createStyles, makeStyles } from "@material-ui/core/styles"
-import React, { useState } from "react"
+import React from "react"
 import { GameInfo } from "../../../App"
 import { GameEvents } from "../../../consts/events/events"
 import { useEventSender } from "../../../hooks/useEventSender/useEventSender"

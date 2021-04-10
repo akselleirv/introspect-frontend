@@ -1,16 +1,11 @@
-import Grid from "@material-ui/core/Grid"
-import { GridSpacing } from "@material-ui/core/Grid"
 import { createStyles } from "@material-ui/core/styles"
 import { Theme } from "@material-ui/core/styles"
 import { makeStyles } from "@material-ui/core/styles"
 import Typography from "@material-ui/core/Typography"
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { GameInfo } from "../../../App"
-import { PlayerButton } from "../../../components/PlayerButton/PlayerButton"
 import { PlayerGrid } from "../../../components/PlayerGrid/PlayerGrid"
-import { GameEvents, PlayerInfo } from "../../../consts/events/events"
-import { useEventListener } from "../../../hooks/useEventListener/useEventListener"
-import { useEventListenerCallback } from "../../../hooks/useEventListenerCallback/useEventListenerCallback"
+import { GameEvents } from "../../../consts/events/events"
 import { useEventSender } from "../../../hooks/useEventSender/useEventSender"
 import { PlayerVotedOnQuestion, Question, Vote } from "../../../types/gameEvents"
 import { Player } from "../../../types/lobby"
@@ -56,7 +51,7 @@ export function QuestionVoting({
           questionID: question.questionID,
         },
       ]
-      if (allVotes.length == MAX_VOTES_PER_ROUND) {
+      if (allVotes.length === MAX_VOTES_PER_ROUND) {
         sendEvent<PlayerVotedOnQuestion>(GameEvents.PlayerVotedOnQuestion, {
           player: gameInfo.playerName,
           votes: allVotes,

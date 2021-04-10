@@ -1,4 +1,4 @@
-import { Button, Divider, Grid } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 import { makeStyles } from "@material-ui/core/styles";

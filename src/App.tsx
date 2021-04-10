@@ -2,8 +2,6 @@ import React, { useState } from "react"
 import { WelcomePage } from "./views/WelcomePage/WelcomePage"
 import { createStyles, Grid, makeStyles, Theme } from "@material-ui/core"
 import { CompositionOfGameAndLobby } from "./views/CompositionOfGameAndLobby/CompositionOfGameAndLobby"
-import { SelfVoting } from "./views/Game/SelfVoting/SelfVoting"
-import { Player } from "./types/lobby"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
