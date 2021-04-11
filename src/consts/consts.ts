@@ -1,5 +1,8 @@
-import { GameInfo } from "../App";
+import { GameInfo } from "../App"
 
 export const consts = () => ({
-    websocketUrl: (gameInfo: GameInfo) => `ws://localhost:8080/ws?player=${gameInfo.playerName}&room=${gameInfo.roomName}`
+  websocketUrl: (gameInfo: GameInfo) =>
+    process.env.NODE_ENV === "production"
+      ? `wss://introspect.no/ws?player=${gameInfo.playerName}&room=${gameInfo.roomName}`
+      : `ws://localhost:8080/ws?player=${gameInfo.playerName}&room=${gameInfo.roomName}`,
 })
