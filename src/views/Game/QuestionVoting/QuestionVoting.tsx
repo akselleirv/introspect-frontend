@@ -1,36 +1,25 @@
-import { createStyles } from "@material-ui/core/styles"
-import { Theme } from "@material-ui/core/styles"
-import { makeStyles } from "@material-ui/core/styles"
 import Typography from "@material-ui/core/Typography"
 import React, { useState } from "react"
 import { GameInfo } from "../../../App"
-import { PlayerGrid } from "../../../components/PlayerGrid/PlayerGrid"
+import { PlayerButton } from "../../../components/PlayerButton/PlayerButton"
 import { GameEvents } from "../../../consts/events/events"
 import { useEventSender } from "../../../hooks/useEventSender/useEventSender"
-import { PlayerVotedOnQuestion, Question, Vote } from "../../../types/gameEvents"
+import {
+  PlayerVotedOnQuestion,
+  Question,
+  Vote,
+} from "../../../types/gameEvents"
 import { Player } from "../../../types/lobby"
+import styles from "./QuestionVoting.module.scss"
 
 const MAX_VOTES_PER_ROUND = 2
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    players: {
-      position: "fixed",
-      top: theme.spacing(50),
-    },
-    header: {
-      position: "fixed",
-      top: "10%",
-    },
-  })
-)
 
 export function QuestionVoting({
   players,
   gameInfo,
   question,
   disableVoting,
-  setDisableVoting
+  setDisableVoting,
 }: {
   players: Player[]
   gameInfo: GameInfo
@@ -38,7 +27,6 @@ export function QuestionVoting({
   disableVoting: boolean
   setDisableVoting: (disable: boolean) => void
 }) {
-  const classes = useStyles()
   const { sendEvent } = useEventSender(gameInfo)
   const [votes, setVotes] = useState<Vote[]>([])
 
@@ -66,15 +54,19 @@ export function QuestionVoting({
 
   return (
     <>
-      <Typography variant="h4" align="center" className={classes.header}>
+      <Typography variant="h4" align="center">
         {question !== undefined && question.question}
       </Typography>
-      <PlayerGrid
-        players={players}
-        gridStyle={classes.players}
-        actionHandler={handlePlayerVote}
-        disableButtons={disableVoting}
-      />
+      <div className={styles.containerTwoFraction}>
+        {players.map((p) => (
+          <PlayerButton
+            key={p.name}
+            name={p.name}
+            actionHandler={handlePlayerVote}
+            disabled={disableVoting}
+          />
+        ))}
+      </div>
     </>
   )
 }

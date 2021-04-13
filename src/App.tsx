@@ -1,43 +1,23 @@
 import React, { useState } from "react"
 import { WelcomePage } from "./views/WelcomePage/WelcomePage"
-import { createStyles, Grid, makeStyles, Theme } from "@material-ui/core"
 import { CompositionOfGameAndLobby } from "./views/CompositionOfGameAndLobby/CompositionOfGameAndLobby"
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      "& .MuiTextField-root": {
-        margin: theme.spacing(2),
-        width: "30ch",
-      },
-    },
-  })
-)
+import styles from "./App.module.scss"
 
 export type GameInfo = { playerName: string; roomName: string }
 function App() {
-  const classes = useStyles()
   const [gameInfo, setGameInfo] = useState<GameInfo>()
   return (
-    <Grid
-      className={classes.root}
-      container
-      spacing={0}
-      direction="column"
-      alignItems="center"
-      justify="center"
-      style={{ minHeight: "60vh" }}
-    >
+    <div className={styles.container}>
       {gameInfo ? (
-        <>
+        <div>
           <CompositionOfGameAndLobby gameInfo={gameInfo} />
-        </>
+        </div>
       ) : (
         <WelcomePage
           setGameInfo={(gameInfo: GameInfo) => setGameInfo(gameInfo)}
         />
       )}
-    </Grid>
+    </div>
   )
 }
 

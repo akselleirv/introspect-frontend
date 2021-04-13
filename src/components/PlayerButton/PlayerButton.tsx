@@ -1,4 +1,4 @@
-import { Button, Grid } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 import { makeStyles } from "@material-ui/core/styles";
@@ -6,6 +6,7 @@ import { Theme } from "@material-ui/core/styles";
 import createStyles from "@material-ui/core/styles/createStyles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
+import styles from './PlayerButton.module.scss';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,16 +37,13 @@ export function PlayerButton({
   const classes = useStyles();
 
   return (
-    <Grid item xs={6} style={{ flexBasis: 0 }}>
       <Button
         variant="contained"
-        classes={{
-          root: classes.button,
-        }}
-        className={classes.button}
+        className={styles.button}
         style={extraStyle}
         onClick={actionHandler ? () => actionHandler(name) : undefined}
         disabled={disabled}
+        
       >
         <Avatar className={classes.avatar}>
           {name.charAt(0).toUpperCase()}
@@ -54,6 +52,5 @@ export function PlayerButton({
           {name.toUpperCase()}
         </Typography>
       </Button>
-    </Grid>
   );
 }
