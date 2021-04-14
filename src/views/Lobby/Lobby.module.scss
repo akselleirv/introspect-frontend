@@ -1,0 +1,5 @@
+@import '../../styles/containers/containers';
+
+.containerLobby {
+    @extend .containerDeadCenter;
+}

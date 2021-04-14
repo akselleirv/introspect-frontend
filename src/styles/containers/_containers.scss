@@ -1,0 +1,18 @@
+.container{
+    display: grid;
+    place-items: center center;
+    gap: 2rem;
+    max-width: 900px;
+    margin: auto;
+}
+
+.containerDeadCenter{
+    @extend .container;
+    height: 50vh;
+}
+
+.containerTwoFraction{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}

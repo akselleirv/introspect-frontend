@@ -1,10 +1,6 @@
 import Avatar from "@material-ui/core/Avatar"
 import Divider from "@material-ui/core/Divider"
-import Grid from "@material-ui/core/Grid"
 import Paper from "@material-ui/core/Paper"
-import { createStyles } from "@material-ui/core/styles"
-import { makeStyles } from "@material-ui/core/styles"
-import { Theme } from "@material-ui/core/styles"
 import Typography from "@material-ui/core/Typography"
 import React from "react"
 import HowToVoteIcon from "@material-ui/icons/HowToVote"
@@ -18,27 +14,11 @@ import MostVotedIcon from "@material-ui/icons/ExpandLess"
 import LeastVotedIcon from "@material-ui/icons/ExpandMore"
 import NeutralVotedIcon from "@material-ui/icons/Remove"
 import ErrorIcon from "@material-ui/icons/Error"
+import styles from "./QuestionResults.module.scss"
+import { makeStyles, Theme, createStyles } from "@material-ui/core"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    paperContent: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: "0.3rem",
-      margin: "0.5rem",
-    },
-    playerInfo: {
-      display: "flex",
-      alignItems: "center",
-      width: "50%",
-    },
-    name: {
-      paddingLeft: "0.2rem",
-    },
-    item: {
-      width: "95%",
-    },
     fullPoint: {
       backgroundColor: "#64DD17",
     },
@@ -57,16 +37,21 @@ export function QuestionResults({
   playerResults: PlayerResultExtended[]
 }) {
   return (
-    <>
-      {playerResults.map(({ player, selfVote, votesReceived, points }) => (
-        <StatusEntry
-          player={player}
-          selfVote={selfVote}
-          votesReceived={votesReceived}
-          points={points}
-        />
-      ))}
-    </>
+    <div>
+      <Typography variant="h5" align="center">
+        Question Result
+      </Typography>
+      {playerResults
+        .sort((p1, p2) => p2.votesReceived - p1.votesReceived)
+        .map(({ player, selfVote, votesReceived, points }) => (
+          <StatusEntry
+            player={player}
+            selfVote={selfVote}
+            votesReceived={votesReceived}
+            points={points}
+          />
+        ))}
+    </div>
   )
 }
 
@@ -77,27 +62,26 @@ function StatusEntry({
   points,
 }: PlayerResultExtended) {
   const classes = useStyles()
-
   function backgroundColorByResultPoint(result: ResultPoints): string {
     const backgroundColors = new Map([
       [ResultPoints.FullPoints, classes.fullPoint],
       [ResultPoints.NeutralPoints, classes.neutralPoint],
       [ResultPoints.NonePoints, classes.nonePoint],
     ])
-    const bc = backgroundColors.get(result)
-    return bc === undefined ? "" : bc
+    const bgColor = backgroundColors.get(result)
+    return bgColor === undefined ? "" : bgColor
   }
 
   return (
-    <Grid item className={classes.item}>
+    <div className={styles.container}>
       <Paper
-        className={`${classes.paperContent} ${backgroundColorByResultPoint(
+        className={`${styles.paperContent} ${backgroundColorByResultPoint(
           points
         )}`}
       >
-        <div className={classes.playerInfo}>
+        <div className={styles.playerInfo}>
           <Avatar>{player.charAt(0).toUpperCase()}</Avatar>
-          <Typography noWrap variant="body1" className={classes.name}>
+          <Typography noWrap variant="body1" className={styles.name}>
             {player.toUpperCase()}
           </Typography>
         </div>
@@ -106,18 +90,12 @@ function StatusEntry({
           <SelfVoteIcon selfVote={selfVote} />
         </Typography>
         <DividerStyled />
-        <div
-          style={{
-            display: "flex",
-            width: "5rem",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className={styles.votesReceived}>
           <Typography>{votesReceived}</Typography>
           <HowToVoteIcon />
         </div>
       </Paper>
-    </Grid>
+    </div>
   )
 }
 
@@ -134,3 +112,4 @@ function SelfVoteIcon({ selfVote }: { selfVote: SelfVote }) {
   const Icon = selfVoteIcons.get(selfVote)
   return Icon === undefined ? <ErrorIcon /> : <Icon />
 }
+

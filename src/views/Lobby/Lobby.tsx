@@ -8,6 +8,7 @@ import { LobbyRoomUpdate } from "../../types/lobby"
 import { LobbyEvents, ChatMessage, PlayerInfo } from "../../consts/events/events"
 import { useEventListener } from "../../hooks/useEventListener/useEventListener"
 import { useEventSender } from "../../hooks/useEventSender/useEventSender"
+import styles from './Lobby.module.scss';
 
 export type Message = { message: string; player: string }
 
@@ -47,15 +48,14 @@ export function Lobby({
   }
 
   return (
-    <>
+    <div className={styles.containerLobby}>
       <Typography variant="h3">Room: {gameInfo.roomName}</Typography>
       <ActivePlayers players={players.players} />
 
-      <Button onClick={handlePlayerReady} color="primary" variant="contained">
+
+      <Button className={styles.button} onClick={handlePlayerReady} color="primary" variant="contained">
         Ready To Play
       </Button>
-
-      <Chat handleSend={handleSend} messages={messages} />
-    </>
+    </div>
   )
 }

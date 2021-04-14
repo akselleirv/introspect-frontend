@@ -14,6 +14,7 @@ import {
   SCOREBOARD_HEIGHT_BETWEEN_EACH_PLAYER,
 } from "../../components/Scoreboard/Scoreboard"
 import { QuestionResults } from "../../components/QuestionResults/QuestionResults"
+import styles from './Game.module.scss';
 
 enum ScreenMode {
   QuestionVoting = "question_voting",
@@ -108,7 +109,7 @@ export function Game({
   }
 
   return (
-    <>
+    <div className={styles.containerDeadCenter}>
       {screenMode === ScreenMode.FetchingQuestion && (
         <Typography>Fetching question...</Typography>
       )}
@@ -155,6 +156,6 @@ export function Game({
           </Button>
         </>
       )}
-    </>
+    </div>
   )
 }
