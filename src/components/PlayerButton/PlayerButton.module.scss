@@ -1,5 +1,8 @@
 .button {
     display: flex;
     justify-content: flex-start;
-    background-color: white;
+
+    p {
+        padding-left: 0.5rem;
+    }
 }

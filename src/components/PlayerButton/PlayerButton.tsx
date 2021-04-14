@@ -14,11 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.getContrastText(deepOrange[500]),
       backgroundColor: deepOrange[500],
     },
-    name: {
-      paddingLeft: theme.spacing(1),
-    },
     button: {
-      width: theme.spacing(24), 
       backgroundColor: "white",
     },
   })
@@ -39,7 +35,7 @@ export function PlayerButton({
   return (
       <Button
         variant="contained"
-        className={styles.button}
+        className={`${styles.button} ${classes.button}`}
         style={extraStyle}
         onClick={actionHandler ? () => actionHandler(name) : undefined}
         disabled={disabled}
@@ -48,7 +44,7 @@ export function PlayerButton({
         <Avatar className={classes.avatar}>
           {name.charAt(0).toUpperCase()}
         </Avatar>
-        <Typography className={classes.name} noWrap variant="body1">
+        <Typography noWrap variant="body1">
           {name.toUpperCase()}
         </Typography>
       </Button>

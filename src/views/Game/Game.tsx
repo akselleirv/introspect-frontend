@@ -83,8 +83,8 @@ export function Game({
     // finally change screen to question voting
     if (eventMessage.currentQuestion % MAX_QUESTIONS_PER_ROUND !== 0) {
       const timer = setTimeout(() => {
-        //setScreenMode(ScreenMode.QuestionVoting)
-        //nextQuestion()
+        setScreenMode(ScreenMode.QuestionVoting)
+        nextQuestion()
         clearTimeout(timer)
       }, 3000)
     }
