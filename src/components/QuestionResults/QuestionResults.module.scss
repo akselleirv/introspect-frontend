@@ -1,0 +1,40 @@
+@import "../../styles/containers/containers";
+
+.paperContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 40vh;
+  margin: 1rem;
+  padding: 0.3rem;
+}
+
+.playerInfo {
+  display: flex;
+  align-items: center;
+  width: 50%;
+}
+
+.name {
+  padding-left: 0.5rem;
+}
+
+.votesReceived {
+  display: flex;
+  width: 5rem;
+  justify-content: space-evenly;
+
+    p {
+        line-height: 30px;
+    }
+}
+
+.fullPoint {
+  background-color: #64dd17;
+}
+.neutralPoint {
+  background-color: #e0e0e0;
+}
+.nonePoint {
+  background-color: #f44336;
+}
