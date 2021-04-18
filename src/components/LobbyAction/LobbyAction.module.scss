@@ -1,0 +1,34 @@
+.container {
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.alertItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 20px;
+  width: 50vh;
+  margin: 1em;
+  padding: 0.5em;
+
+  cursor: pointer;
+
+  svg {
+    position: absolute;
+    left: 10%;
+  }
+}
+
+.joined {
+  color: rgb(13, 60, 97);
+  background-color: rgb(232, 244, 253);
+}
+
+.left {
+  color: rgb(102, 60, 0);
+  background-color: rgb(255, 244, 229);
+}

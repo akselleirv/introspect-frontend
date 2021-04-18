@@ -4,6 +4,7 @@ import { Game } from "../Game/Game"
 import { usePlayers } from "../../hooks/usePlayers/usePlayers"
 import { Lobby } from "../Lobby/Lobby"
 import { Player } from "../../types/lobby"
+import { LobbyAction } from "../../components/LobbyAction/LobbyAction"
 
 export function CompositionOfGameAndLobby({
   gameInfo,
@@ -12,13 +13,19 @@ export function CompositionOfGameAndLobby({
 }) {
   const { players, startGame } = usePlayers(gameInfo)
 
-  return startGame ? (
-    <Game
-      players={removeSelf(players.players, gameInfo.playerName)}
-      gameInfo={gameInfo}
-    />
-  ) : (
-    <Lobby players={players} gameInfo={gameInfo} />
+  return (
+    <>
+      {startGame ? (
+        <Game
+          players={removeSelf(players.players, gameInfo.playerName)}
+          gameInfo={gameInfo}
+        />
+      ) : (
+        <Lobby players={players} gameInfo={gameInfo} />
+      )}
+
+      <LobbyAction gameInfo={gameInfo} />
+    </>
   )
 }
 

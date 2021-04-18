@@ -1,38 +1,35 @@
 import { useState, useEffect } from "react"
-import useWebSocket from "react-use-websocket"
 import { GameInfo } from "../../App"
-import { consts } from "../../consts/consts"
 import { LobbyEvents } from "../../consts/events/events"
-import { LobbyRoomUpdate } from "../../types/lobby"
+import { ActionTrigger, LobbyRoomUpdate } from "../../types/lobby"
+import { useEventListenerCallback } from "../useEventListenerCallback/useEventListenerCallback"
 
 export function usePlayers(gameInfo: GameInfo) {
-  const { lastMessage } = useWebSocket(consts().websocketUrl(gameInfo), {
-    share: true,
-  })
-
   const [players, setPlayers] = useState<LobbyRoomUpdate>({
     isAllReady: false,
     players: [],
   })
   const [startGame, setStartGame] = useState<boolean>(false)
+  const [actionTrigger, setActionTrigger] = useState<ActionTrigger>()
 
-  useEffect(() => {
-    if (lastMessage !== null) {
-      const message = JSON.parse(lastMessage.data)
-      if (message.event === LobbyEvents.RoomUpdate) {
-        delete message["event"]
-        if (message.isAllReady) {
-          setPlayers(message)
-          setStartGame(true)
-        } else {
-          setPlayers(message)
-        }
-      }
+  useEventListenerCallback<LobbyRoomUpdate>(
+    LobbyEvents.RoomUpdate,
+    handleRoomUpdate,
+    gameInfo
+  )
+
+  function handleRoomUpdate(lobbyRoomUpdate: LobbyRoomUpdate) {
+    setPlayers(lobbyRoomUpdate)
+    setActionTrigger(lobbyRoomUpdate.actionTrigger)
+
+    if (lobbyRoomUpdate.isAllReady) {
+      setStartGame(true)
     }
-  }, [lastMessage])
+  }
 
   return {
     players,
     startGame,
+    actionTrigger
   }
 }
