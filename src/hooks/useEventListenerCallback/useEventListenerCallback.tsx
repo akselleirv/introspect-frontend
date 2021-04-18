@@ -16,5 +16,6 @@ export function useEventListenerCallback<T = any>(
     if (eventMessage !== undefined) {
       callback(eventMessage)
     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventMessage])
 }

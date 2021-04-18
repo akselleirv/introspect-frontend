@@ -18,6 +18,7 @@ export function useQuestion(gameInfo: GameInfo) {
     questionsEvent !== undefined && setQuestions(questionsEvent.questions)
   }, [questionsEvent])
 
+  // eslint-disable-next-line
   useEffect(getQuestions, [])
 
   function getQuestions() {

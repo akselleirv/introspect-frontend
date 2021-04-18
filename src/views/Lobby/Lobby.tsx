@@ -1,16 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useState } from "react"
 import Typography from "@material-ui/core/Typography"
 import { GameInfo } from "../../App"
 import { ActivePlayers } from "./ActivePlayers/ActivePlayers"
-import { Chat } from "./Chat/Chat"
 import { Button, Snackbar } from "@material-ui/core"
 import { LobbyRoomUpdate } from "../../types/lobby"
 import {
   LobbyEvents,
-  ChatMessage,
   PlayerInfo,
 } from "../../consts/events/events"
-import { useEventListener } from "../../hooks/useEventListener/useEventListener"
 import { useEventSender } from "../../hooks/useEventSender/useEventSender"
 import styles from "./Lobby.module.scss"
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert"

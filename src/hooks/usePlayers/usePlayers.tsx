@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { GameInfo } from "../../App"
 import { LobbyEvents } from "../../consts/events/events"
 import { ActionTrigger, LobbyRoomUpdate } from "../../types/lobby"

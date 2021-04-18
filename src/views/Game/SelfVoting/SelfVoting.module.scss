@@ -1,4 +1,11 @@
+@import '../../../styles/containers/containers';
+
 .buttonGroup {
     width: 280px;
     padding: 2rem;
+}
+
+.container{
+    @extend .containerDeadCenter;
+    height: 80vh;
 }

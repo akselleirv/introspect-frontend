@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { GameInfo } from "../../App"
 import { usePlayers } from "../../hooks/usePlayers/usePlayers"
 import styles from "./LobbyAction.module.scss"
@@ -76,5 +76,3 @@ export function LobbyAction({ gameInfo }: { gameInfo: GameInfo }) {
     </>
   )
 }
-
-function SnackBar() {}

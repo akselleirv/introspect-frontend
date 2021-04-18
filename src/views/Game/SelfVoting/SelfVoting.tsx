@@ -1,5 +1,4 @@
-import { Button, ButtonGroup, Theme, Typography } from "@material-ui/core"
-import { createStyles, makeStyles } from "@material-ui/core/styles"
+import { Button, ButtonGroup, Typography } from "@material-ui/core"
 import React from "react"
 import { GameInfo } from "../../../App"
 import { GameEvents } from "../../../consts/events/events"
@@ -32,7 +31,7 @@ export function SelfVoting({
     setDisableVoting(true)
   }
   return (
-    <>
+    <div className={styles.container}>
       <Typography variant="h4" align="center">
         {question.question}
       </Typography>
@@ -69,6 +68,6 @@ export function SelfVoting({
           </Button>
         </ButtonGroup>
       </div>
-    </>
+    </div>
   )
 }
