@@ -8,7 +8,7 @@ import React, { ChangeEvent, useState } from "react";
 import { GameInfo } from "../../App";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import HomeIcon from "@material-ui/icons/Home";
-
+import styles from './WelcomePage.module.scss'
 
 
 export function WelcomePage({
@@ -19,7 +19,7 @@ export function WelcomePage({
   const [playerName, setPlayerName] = useState("aksel");
   const [roomName, setRoomName] = useState("test");
   return (
-    <>
+    <div className={styles.container}>
       <Typography variant="h2" align="center" >Welcome to Introspect</Typography>
       <TextField
         id="outlined-basic"
@@ -62,6 +62,6 @@ export function WelcomePage({
       >
         Join Room
       </Button>
-    </>
+    </div>
   );
 }

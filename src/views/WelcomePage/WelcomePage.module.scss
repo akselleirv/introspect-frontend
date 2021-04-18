@@ -1,0 +1,10 @@
+@import '../../styles/containers/containers';
+
+.container {
+    @extend .container;
+    padding-top: 2rem;
+
+    button {
+        margin-top: 10vh;
+    }
+}
