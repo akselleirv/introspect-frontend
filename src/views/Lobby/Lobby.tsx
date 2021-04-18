@@ -3,14 +3,20 @@ import Typography from "@material-ui/core/Typography"
 import { GameInfo } from "../../App"
 import { ActivePlayers } from "./ActivePlayers/ActivePlayers"
 import { Chat } from "./Chat/Chat"
-import { Button } from "@material-ui/core"
+import { Button, Snackbar } from "@material-ui/core"
 import { LobbyRoomUpdate } from "../../types/lobby"
-import { LobbyEvents, ChatMessage, PlayerInfo } from "../../consts/events/events"
+import {
+  LobbyEvents,
+  ChatMessage,
+  PlayerInfo,
+} from "../../consts/events/events"
 import { useEventListener } from "../../hooks/useEventListener/useEventListener"
 import { useEventSender } from "../../hooks/useEventSender/useEventSender"
-import styles from './Lobby.module.scss';
+import styles from "./Lobby.module.scss"
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert"
 
 export type Message = { message: string; player: string }
+const recommendedMinPlayers = 3
 
 export function Lobby({
   gameInfo,
@@ -19,32 +25,29 @@ export function Lobby({
   gameInfo: GameInfo
   players: LobbyRoomUpdate
 }) {
-  const { eventMessage: chatMessage } = useEventListener<ChatMessage>(
-    LobbyEvents.Chat,
-    gameInfo
+  const [alertUnderMinPlayers, setAlertUnderMinPlayers] = useState<boolean>(
+    false
   )
-  const [messages, setMessages] = useState<Message[]>([])
   const { sendEvent } = useEventSender(gameInfo)
 
-  useEffect(() => {
-    chatMessage !== undefined &&
-      setMessages((prevMessages) => prevMessages.concat(chatMessage))
-  }, [chatMessage])
-
-  const handleSend = useCallback(
-    (message: string) =>
-      message &&
-      sendEvent<ChatMessage>(LobbyEvents.Chat, {
-        player: gameInfo.playerName,
-        message: message,
-      }),
-    [gameInfo.playerName, sendEvent]
-  )
-
   function handlePlayerReady() {
-    sendEvent<PlayerInfo>(LobbyEvents.PlayerReady, {
-      player: gameInfo.playerName,
-    })
+    if (players.players.length >= recommendedMinPlayers) {
+      sendEvent<PlayerInfo>(LobbyEvents.PlayerReady, {
+        player: gameInfo.playerName,
+      })
+    } else {
+      setAlertUnderMinPlayers(true)
+    }
+  }
+  const handleAlertUnderMinPlayersClose = (
+    event?: React.SyntheticEvent,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return
+    }
+
+    setAlertUnderMinPlayers(false)
   }
 
   return (
@@ -52,10 +55,30 @@ export function Lobby({
       <Typography variant="h3">Room: {gameInfo.roomName}</Typography>
       <ActivePlayers players={players.players} />
 
-
-      <Button className={styles.button} onClick={handlePlayerReady} color="primary" variant="contained">
+      <Button
+        className={styles.button}
+        onClick={handlePlayerReady}
+        color="primary"
+        variant="contained"
+      >
         Ready To Play
       </Button>
+
+      <Snackbar
+        open={alertUnderMinPlayers}
+        autoHideDuration={4000}
+        onClose={handleAlertUnderMinPlayersClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleAlertUnderMinPlayersClose} severity="warning">
+          You need {recommendedMinPlayers - players.players.length} more to play 😢 😢<br/>
+          Invite your friends to join the '{gameInfo.roomName} ' room
+        </Alert>
+      </Snackbar>
     </div>
   )
+}
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />
 }
