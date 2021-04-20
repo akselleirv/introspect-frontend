@@ -39,3 +39,7 @@ export interface RegisterSelfVote {
     choice: SelfVote
     question: Question
 }
+
+export interface GenericEvent {
+    player: string
+}

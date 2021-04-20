@@ -6,15 +6,12 @@ import { useEventListenerCallback } from "../../hooks/useEventListenerCallback/u
 import { GameEvents } from "../../consts/events/events"
 import { SelfVoting } from "./SelfVoting/SelfVoting"
 import { useQuestion } from "../../hooks/useQuestions/useQuestions"
-import { Typography, Button } from "@material-ui/core"
+import { Typography } from "@material-ui/core"
 import { PlayerResultExtended, PlayerResult } from "../../types/gameEvents"
-import {
-  Scoreboard,
-  ScoreboardProps,
-  SCOREBOARD_HEIGHT_BETWEEN_EACH_PLAYER,
-} from "../../components/Scoreboard/Scoreboard"
+import { ScoreboardProps } from "../../components/Scoreboard/Scoreboard"
 import { QuestionResults } from "../../components/QuestionResults/QuestionResults"
-import styles from './Game.module.scss';
+import styles from "./Game.module.scss"
+import { ScoreboardView } from "../../components/ScoreboardView/ScoreboardView"
 
 enum ScreenMode {
   QuestionVoting = "question_voting",
@@ -74,6 +71,12 @@ export function Game({
     gameInfo
   )
 
+  useEventListenerCallback(
+    GameEvents.AllPlayerReadyForNextRound,
+    handleNextRoundEvent,
+    gameInfo
+  )
+
   function handleQuestionIsDoneEvent(eventMessage: QuestionIsDoneProps) {
     setDisableVoting(false)
     setScreenMode(ScreenMode.StatusAfterSelfVote)
@@ -108,6 +111,11 @@ export function Game({
     setScreenMode(ScreenMode.Scoreboard)
   }
 
+  function handleNextRoundEvent() {
+    nextQuestion()
+    setScreenMode(ScreenMode.QuestionVoting)
+  }
+
   return (
     <div className={styles.containerDeadCenter}>
       {screenMode === ScreenMode.FetchingQuestion && (
@@ -138,23 +146,11 @@ export function Game({
       )}
 
       {screenMode === ScreenMode.Scoreboard && (
-        <>
-          <Scoreboard
-            playersResults={playersResults}
-            playersResultExceptLastRound={playersResultExceptLastRound}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            style={{top: `${50 + SCOREBOARD_HEIGHT_BETWEEN_EACH_PLAYER*playersResults.length}px`}}
-            onClick={() => {
-              nextQuestion()
-              setScreenMode(ScreenMode.QuestionVoting)
-            }}
-          >
-            Next Round
-          </Button>
-        </>
+        <ScoreboardView
+          playersResults={playersResults}
+          playersResultExceptLastRound={playersResultExceptLastRound}
+          gameInfo={gameInfo}
+        />
       )}
     </div>
   )
