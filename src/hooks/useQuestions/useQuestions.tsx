@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react"
 import { GameInfo } from "../../App"
 import { GameEvents, PlayerInfo } from "../../consts/events/events"
-import { Question } from "../../types/gameEvents"
+import { Question, Questions } from "../../types/gameEvents"
 import { MAX_QUESTIONS_PER_ROUND } from "../../views/Game/Game"
-import { useEventListener } from "../useEventListener/useEventListener"
+import { useEventListenerCallback } from "../useEventListenerCallback/useEventListenerCallback"
 import { useEventSender } from "../useEventSender/useEventSender"
 
 export function useQuestion(gameInfo: GameInfo) {
   const [questions, setQuestions] = useState<Question[]>([])
   const [currentQuestion, setCurrentQuestion] = useState<number>(0)
   const { sendEvent } = useEventSender(gameInfo)
-  const { eventMessage: questionsEvent } = useEventListener<{
-    questions: Question[]
-  }>(GameEvents.GetQuestionsResponse, gameInfo)
+  useEventListenerCallback<Questions>(
+    GameEvents.GetQuestionsResponse,
+    HandleQuestionReponse,
+    gameInfo
+  )
 
-  useEffect(() => {
-    questionsEvent !== undefined && setQuestions(questionsEvent.questions)
-  }, [questionsEvent])
+  function HandleQuestionReponse(eventMessage: Questions) {
+    setQuestions(eventMessage.questions)
+  }
 
   // eslint-disable-next-line
   useEffect(getQuestions, [])

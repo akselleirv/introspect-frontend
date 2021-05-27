@@ -55,7 +55,7 @@ export function QuestionVoting({
   return (
     <>
       <Typography variant="h4" align="center">
-        {question !== undefined && question.question}
+        {question !== undefined && question.question.en}
       </Typography>
       <div className={styles.containerTwoFraction}>
         {players.map((p) => (

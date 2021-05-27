@@ -17,9 +17,6 @@ import { PlayerResult } from "../../types/gameEvents"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    list: {
-      marginTop: '-10rem'
-    },
     avatar: {
       color: theme.palette.getContrastText(deepOrange[500]),
       backgroundColor: deepOrange[500],
@@ -83,7 +80,7 @@ export function Scoreboard({
 
   return (
     <>
-      <Grid item className={classes.list}>
+      <Grid item >
         <Typography variant="h2">Scoreboard</Typography>
         {/*@ts-ignore */}
         {transition.map(({ item, props: { y, ...rest }, key }) => (
