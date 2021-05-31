@@ -29,6 +29,7 @@ export interface PlayerVotedOnQuestion {
   votes: Vote[] // 2 votes - should be fixed
 }
 export interface Questions {
+  error?: string
   questions: Question[]
 }
 

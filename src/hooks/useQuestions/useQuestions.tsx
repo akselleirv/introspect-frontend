@@ -7,16 +7,21 @@ import { useEventListenerCallback } from "../useEventListenerCallback/useEventLi
 import { useEventSender } from "../useEventSender/useEventSender"
 
 export function useQuestion(gameInfo: GameInfo) {
+  const [error, setError] = useState<string>()
   const [questions, setQuestions] = useState<Question[]>([])
   const [currentQuestion, setCurrentQuestion] = useState<number>(0)
   const { sendEvent } = useEventSender(gameInfo)
   useEventListenerCallback<Questions>(
     GameEvents.GetQuestionsResponse,
-    HandleQuestionReponse,
+    handleQuestionReponse,
     gameInfo
   )
 
-  function HandleQuestionReponse(eventMessage: Questions) {
+  function handleQuestionReponse(eventMessage: Questions) {
+    if (eventMessage.error) {
+      setError(eventMessage.error)
+      return
+    }
     setQuestions(eventMessage.questions)
   }
 
@@ -44,5 +49,6 @@ export function useQuestion(gameInfo: GameInfo) {
         ? undefined
         : questions[currentQuestion],
     nextQuestion,
+    error,
   }
 }

@@ -16,7 +16,6 @@ export function useEventListener<T>(
   useEffect(() => {
     if (lastJsonMessage != null) {
       if (lastJsonMessage.event === event) {
-        delete lastJsonMessage["event"]
         setEventMessage(lastJsonMessage)
       }
     }

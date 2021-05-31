@@ -39,15 +39,13 @@ export function Game({
     ScreenMode.QuestionVoting
   )
   const [disableVoting, setDisableVoting] = useState<boolean>(false)
-  const { question, nextQuestion } = useQuestion(gameInfo)
+  const { question, nextQuestion, error } = useQuestion(gameInfo)
   const [questionResult, setQuestionResult] = useState<PlayerResultExtended[]>(
     []
   )
   const [playersResults, setPlayersResults] = useState<PlayerResult[]>([])
-  const [
-    playersResultExceptLastRound,
-    setPlayersResultExceptLastRound,
-  ] = useState<PlayerResult[]>([])
+  const [playersResultExceptLastRound, setPlayersResultExceptLastRound] =
+    useState<PlayerResult[]>([])
 
   useEffect(() => {
     setScreenMode(
@@ -114,6 +112,10 @@ export function Game({
   function handleNextRoundEvent() {
     nextQuestion()
     setScreenMode(ScreenMode.QuestionVoting)
+  }
+
+  if (error) {
+    return <h1>No more questions.</h1>
   }
 
   return (
