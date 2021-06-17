@@ -12,6 +12,7 @@ import { ScoreboardProps } from "../../components/Scoreboard/Scoreboard"
 import { QuestionResults } from "../../components/QuestionResults/QuestionResults"
 import styles from "./Game.module.scss"
 import { ScoreboardView } from "../../components/ScoreboardView/ScoreboardView"
+import { Language } from "../CompositionOfGameAndLobby/CompositionOfGameAndLobby"
 
 enum ScreenMode {
   QuestionVoting = "question_voting",
@@ -31,15 +32,17 @@ export const MAX_QUESTIONS_PER_ROUND = 4
 export function Game({
   players,
   gameInfo,
+  language
 }: {
   players: Player[]
   gameInfo: GameInfo
+  language: Language
 }) {
   const [screenMode, setScreenMode] = useState<ScreenMode>(
     ScreenMode.QuestionVoting
   )
   const [disableVoting, setDisableVoting] = useState<boolean>(false)
-  const { question, nextQuestion, error } = useQuestion(gameInfo)
+  const { question, nextQuestion, error } = useQuestion(gameInfo, language)
   const [questionResult, setQuestionResult] = useState<PlayerResultExtended[]>(
     []
   )

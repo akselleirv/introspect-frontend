@@ -3,3 +3,13 @@
 .containerLobby {
     @extend .containerDeadCenter;
 }
+
+.language{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    svg {
+        padding-right: 5px;
+    }
+}

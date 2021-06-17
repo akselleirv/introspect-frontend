@@ -28,19 +28,19 @@ export interface PlayerVotedOnQuestion {
   player: string
   votes: Vote[] // 2 votes - should be fixed
 }
-export interface Questions {
+export interface RawQuestions {
   error?: string
-  questions: Question[]
+  questions: RawQuestion[]
+}
+
+export interface RawQuestion {
+  questionID: string
+  question: { no: string; en: string }
 }
 
 export interface Question {
   questionID: string
-  question: QuestionTranslations
-}
-
-export interface QuestionTranslations {
-  en: string
-  no: string
+  question: string
 }
 
 export interface RegisterSelfVote {

@@ -33,7 +33,7 @@ export function SelfVoting({
   return (
     <div className={styles.container}>
       <Typography variant="h4" align="center">
-        {question.question.en}
+        {question.question}
       </Typography>
       <div>
         <Typography align="center">are you either:</Typography>
