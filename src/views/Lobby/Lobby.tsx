@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react"
+import React, { useState } from "react"
 import Typography from "@material-ui/core/Typography"
 import { GameInfo } from "../../App"
 import { ActivePlayers } from "./ActivePlayers/ActivePlayers"
@@ -9,12 +9,15 @@ import { useEventSender } from "../../hooks/useEventSender/useEventSender"
 import styles from "./Lobby.module.scss"
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert"
 import SendIcon from "@material-ui/icons/Send"
-import MenuItem from "@material-ui/core/MenuItem"
-import Select from "@material-ui/core/Select"
-import FormControl from "@material-ui/core/FormControl"
-import InputLabel from "@material-ui/core/InputLabel"
 import LanguageIcon from "@material-ui/icons/Language"
 import { Language } from "../CompositionOfGameAndLobby/CompositionOfGameAndLobby"
+import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer"
+import Fab from "@material-ui/core/Fab"
+import SpeedDial from "@material-ui/lab/SpeedDial"
+import SpeedDialAction from "@material-ui/lab/SpeedDialAction"
+import { AddQuestion } from "../../components/AddQuestion/AddQuestion"
+import { makeStyles } from "@material-ui/core/styles"
+import { green } from "@material-ui/core/colors"
 
 export type Message = { message: string; player: string }
 const recommendedMinPlayers = 3
@@ -23,13 +26,14 @@ export function Lobby({
   gameInfo,
   players,
   language,
-  setLanguage
+  setLanguage,
 }: {
   gameInfo: GameInfo
   players: LobbyRoomUpdate
   language: Language
   setLanguage: (language: Language) => void
 }) {
+  const [openAddQuestion, setOpenAddQuestion] = useState(false)
   const [alertUnderMinPlayers, setAlertUnderMinPlayers] =
     useState<boolean>(false)
   const { sendEvent } = useEventSender(gameInfo)
@@ -43,6 +47,7 @@ export function Lobby({
       setAlertUnderMinPlayers(true)
     }
   }
+
   const handleAlertUnderMinPlayersClose = (
     event?: React.SyntheticEvent,
     reason?: string
@@ -56,7 +61,7 @@ export function Lobby({
 
   return (
     <div className={styles.containerLobby}>
-      <Typography variant="h3">Room: {gameInfo.roomName}</Typography>
+      <Typography variant="h3">{gameInfo.roomName}</Typography>
       <ActivePlayers players={players.players} />
 
       <Button
@@ -67,8 +72,29 @@ export function Lobby({
       >
         Ready To Play
       </Button>
-      <QuestionLanguageSelect language={language} setLanguage={setLanguage} />
 
+      <div className={styles.options}>
+        <span>
+          <QuestionLanguageSelect
+            language={language}
+            setLanguage={setLanguage}
+          />
+        </span>
+        <span>
+          <Fab
+            color="primary"
+            aria-label="add question"
+            onClick={() => setOpenAddQuestion(true)}
+          >
+            <QuestionAnswerIcon />
+          </Fab>
+        </span>
+      </div>
+
+      <AddQuestion
+        open={openAddQuestion}
+        onClose={() => setOpenAddQuestion(false)}
+      />
       <Snackbar
         open={alertUnderMinPlayers}
         autoHideDuration={4000}
@@ -90,6 +116,12 @@ function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
+const useStyles = makeStyles({
+  choosenLanguage: {
+    backgroundColor: green[100],
+  },
+})
+
 function QuestionLanguageSelect({
   language,
   setLanguage,
@@ -97,26 +129,34 @@ function QuestionLanguageSelect({
   language: Language
   setLanguage: (language: Language) => void
 }) {
+  const classes = useStyles()
+  const [open, setOpen] = useState(false)
+  const handleClose = (newLang: Language) => {
+    setOpen(false)
+    setLanguage(newLang)
+  }
+
   return (
-    <FormControl variant="outlined">
-      <InputLabel id="demo-simple-select-outlined-label">Language</InputLabel>
-      <Select
-        labelId="demo-simple-select-outlined-label"
-        id="demo-simple-select-outlined"
-        value={language}
-        onChange={(event: ChangeEvent<{ value: unknown }>) =>
-          setLanguage(event.target.value as Language)
-        }
-        label="Language"
-        renderValue={(value) => (
-          <div className={styles.language}>
-            <LanguageIcon /> {value}
-          </div>
-        )}
-      >
-        <MenuItem value={Language.no}>{Language.no}</MenuItem>
-        <MenuItem value={Language.en}>{Language.en}</MenuItem>
-      </Select>
-    </FormControl>
+    <SpeedDial
+      ariaLabel="choose language"
+      icon={<LanguageIcon />}
+      onClose={() => setOpen(false)}
+      onOpen={() => setOpen(true)}
+      open={open}
+      direction={"left"}
+    >
+      <SpeedDialAction
+        icon={<span>NO</span>}
+        onClick={() => handleClose(Language.no)}
+        tooltipTitle="Norsk"
+        className={language === Language.no ? classes.choosenLanguage : ""}
+      />
+      <SpeedDialAction
+        icon={<span>EN</span>}
+        onClick={() => handleClose(Language.en)}
+        tooltipTitle="English"
+        className={language === Language.en ? classes.choosenLanguage : ""}
+      />
+    </SpeedDial>
   )
 }

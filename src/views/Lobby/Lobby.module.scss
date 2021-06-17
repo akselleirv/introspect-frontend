@@ -1,15 +1,26 @@
-@import '../../styles/containers/containers';
+@import "../../styles/containers/containers";
 
 .containerLobby {
-    @extend .containerDeadCenter;
+  @extend .containerDeadCenter;
 }
 
-.language{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    svg {
-        padding-right: 5px;
-    }
+.language {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    padding-right: 5px;
+  }
+}
+
+.options {
+  display: flex;
+  position: absolute;
+  top: 70vh;
+  right: 5vh;
+
+  span {
+    padding: 0.5rem;
+  }
 }
