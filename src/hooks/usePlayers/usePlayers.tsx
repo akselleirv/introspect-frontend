@@ -21,7 +21,6 @@ export function usePlayers(gameInfo: GameInfo) {
   function handleRoomUpdate(lobbyRoomUpdate: LobbyRoomUpdate) {
     setPlayers(lobbyRoomUpdate)
     setActionTrigger(lobbyRoomUpdate.actionTrigger)
-
     if (lobbyRoomUpdate.isAllReady) {
       setStartGame(true)
     }

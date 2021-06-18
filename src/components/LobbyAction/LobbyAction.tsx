@@ -4,12 +4,17 @@ import { usePlayers } from "../../hooks/usePlayers/usePlayers"
 import styles from "./LobbyAction.module.scss"
 import { useTransition, animated } from "react-spring"
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline"
-import { LobbyUpdateActions } from "../../types/lobby"
-
-type ActionTrigger = { player: string; action: LobbyUpdateActions }
+import { ActionTrigger, Actions } from "../../types/lobby"
+import { useEventListenerCallback } from "../../hooks/useEventListenerCallback/useEventListenerCallback"
+import { LobbyEvents } from "../../consts/events/events"
 
 export function LobbyAction({ gameInfo }: { gameInfo: GameInfo }) {
   const { actionTrigger } = usePlayers(gameInfo)
+  useEventListenerCallback<ActionTrigger>(
+    LobbyEvents.PlayerAddedCustomQuestion,
+    handleActionTrigger,
+    gameInfo
+  )
 
   const [actionTriggers, setActionTriggers] = useState<ActionTrigger[]>([])
   const transitions = useTransition(
@@ -31,7 +36,7 @@ export function LobbyAction({ gameInfo }: { gameInfo: GameInfo }) {
   function handleActionTrigger(actionTrigger: ActionTrigger) {
     const newTrigger: ActionTrigger = {
       player: actionTrigger.player,
-      action: actionTrigger.action as LobbyUpdateActions,
+      action: actionTrigger.action,
     }
     setActionTriggers((prev) => [newTrigger, ...prev])
 
@@ -60,19 +65,31 @@ export function LobbyAction({ gameInfo }: { gameInfo: GameInfo }) {
                 style={props}
                 onClick={() => handleClose(item.player)}
                 className={`${styles.alertItem} ${
-                  item.action === LobbyUpdateActions.Joined
-                    ? styles.joined
-                    : styles.left
+                  item.action === Actions.Left ? styles.left : styles.joined
                 }`}
               >
                 <ErrorOutlineIcon />
-                <span>
-                  {item.player} {item.action.toLocaleLowerCase()} 👋👋
-                </span>
+                <span>{resolveActionMessage(item)}</span>
               </animated.div>
             )
         )}
       </div>
     </>
   )
+}
+
+function resolveActionMessage(trigger: ActionTrigger): string {
+  const actionHandlers = new Map([
+    [Actions.Joined, `${trigger.player} joined 👋👋`],
+    [Actions.Left, `${trigger.player} left 👋👋`],
+    [
+      Actions.CustomQuestionAdded,
+      `${trigger.player} added a custom question 🤔🤔`,
+    ],
+  ])
+  
+  if (!actionHandlers.has(trigger.action)) {
+    throw new Error(`no action handler found for action: ${trigger.action}`)
+  }
+  return actionHandlers.get(trigger.action)!
 }

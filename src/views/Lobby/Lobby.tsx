@@ -94,6 +94,7 @@ export function Lobby({
       <AddQuestion
         open={openAddQuestion}
         onClose={() => setOpenAddQuestion(false)}
+        gameInfo={gameInfo}
       />
       <Snackbar
         open={alertUnderMinPlayers}

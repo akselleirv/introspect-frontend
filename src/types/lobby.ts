@@ -8,10 +8,10 @@ export interface LobbyRoomUpdate {
 
 export interface ActionTrigger {
   player: string
-  action: LobbyUpdateActions
+  action: Actions
 }
-
-export enum LobbyUpdateActions {
+export enum Actions {
+  CustomQuestionAdded = "player_added_custom_question",
   Joined = "JOINED",
   Left = "LEFT",
 }
